@@ -45,7 +45,7 @@ from . import limit
 
 
 
-# replace _keyHandler in reviewer.py to add a keybinding
+origKeyHandler = Reviewer._keyHandler
 def addShortcuts20(self, evt):
     k = unicode(evt.text())
     if k == co['access_dialog_from_reviewer']:
@@ -89,7 +89,6 @@ def entry_for_21__contextmenu_shortcut():
 
 
 def entry_for_20__contextmenu_shortcut():
-    origKeyHandler = Reviewer._keyHandler
     Reviewer._keyHandler = addShortcuts20
     if co['add_entry_to_context_menu']:
         addHook("AnkiWebView.contextMenuEvent", reviewerContextMenu20)
