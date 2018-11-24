@@ -44,8 +44,11 @@ from . import utils
 from . import limit
 
 
+#this weird layout to load shortcut/context menu so that is runs only after checking all
+#user settings once the profile has loaded
 
-origKeyHandler = Reviewer._keyHandler
+if not ANKI21:
+    origKeyHandler = Reviewer._keyHandler
 def addShortcuts20(self, evt):
     k = unicode(evt.text())
     if k == co['access_dialog_from_reviewer']:
