@@ -7,8 +7,3 @@ from anki import version
 ANKI21 = version.startswith("2.1.")
 
 from . import verify
-
-
-
-
-    return co
