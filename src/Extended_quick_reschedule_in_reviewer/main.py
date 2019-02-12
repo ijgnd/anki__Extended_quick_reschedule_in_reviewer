@@ -57,7 +57,7 @@ else:
 from . import mydialog
 from . import verify
 from . import rememorize
-from . import utils
+
 
 
 #this weird layout to load shortcut/context menu so that is runs only after checking all
