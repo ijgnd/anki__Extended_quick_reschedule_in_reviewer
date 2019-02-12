@@ -25,14 +25,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 
-
-
 import os
-import datetime
 import json
-import random
-import time
-from heapq import *
 from codecs import open
 
 from anki import version
@@ -43,15 +37,6 @@ from aqt.qt import *
 from aqt.utils import tooltip, showInfo
 from aqt.reviewer import Reviewer
 from anki.hooks import addHook, runHook
-from anki.utils import intTime
-
-if ANKI21:
-    from PyQt5.QtCore import Qt
-    from PyQt5.QtCore import QTimer
-else:
-    from PyQt4.QtCore import Qt
-    from PyQt4.QtCore import QTimer
-
 
 
 from . import mydialog
