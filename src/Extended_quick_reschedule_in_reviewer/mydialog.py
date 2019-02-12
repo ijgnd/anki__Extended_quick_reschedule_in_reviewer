@@ -5,12 +5,12 @@ from aqt import mw
 from anki import version
 
 if version.startswith("2.1."):
-    from PyQt5.QtCore import Qt, QTimer, QSize
-    from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QShortcut, QVBoxLayout, QHBoxLayout, QDialog, QLabel, QSizePolicy
+    from PyQt5.QtCore import Qt, QSize
+    from PyQt5.QtWidgets import QPushButton, QShortcut, QDialog
     from PyQt5.QtGui import QKeySequence
 else:
-    from PyQt4.QtCore import Qt, QTimer, QSize
-    from PyQt4.QtGui import QHBoxLayout, QPushButton, QShortcut, QVBoxLayout, QHBoxLayout, QDialog, QLabel, QLineEdit, QSizePolicy
+    from PyQt4.QtCore import Qt, QSize
+    from PyQt4.QtGui import QPushButton, QShortcut, QDialog
     from PyQt4.QtGui import QKeySequence
 from aqt.qt import *
 
