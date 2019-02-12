@@ -92,6 +92,7 @@ class MultiPrompt(QDialog):
             qf.setText('forget')
             qf.clicked.connect(lambda: self.set_and_accept(0))
             self.qrs.vL_custom.addWidget(qf)
+        
 
     def checkText(self,arg):
         try:
