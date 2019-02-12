@@ -56,7 +56,6 @@ else:
 
 from . import mydialog
 from . import verify
-from . import rememorize
 
 
 
