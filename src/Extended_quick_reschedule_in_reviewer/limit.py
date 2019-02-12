@@ -23,7 +23,7 @@ def deadline_for_did(didlist, deadlinelist):
     return latest
 
 
-def upper_under_exam_date_or_deck_maxIvl(card,deadlinelist,upper):
+def ivl_under_exam_date_or_deck_maxIvl(card,deadlinelist):
     decks = mw.col.decks
     if card.odid:    
         latestAsDTO = deadline_for_did([card.did,card.odid],deadlinelist)

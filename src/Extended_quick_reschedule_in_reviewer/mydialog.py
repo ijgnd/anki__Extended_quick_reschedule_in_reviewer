@@ -5,11 +5,13 @@ from aqt import mw
 from anki import version
 
 if version.startswith("2.1."):
-    from PyQt5.QtCore import Qt
-    from PyQt5.QtCore import QTimer
+    from PyQt5.QtCore import Qt, QTimer
+    from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QShortcut, QVBoxLayout, QHBoxLayout, QDialog, QLabel, QSizePolicy
+    from PyQt5.QtGui import QKeySequence
 else:
-    from PyQt4.QtCore import Qt
-    from PyQt4.QtCore import QTimer
+    from PyQt4.QtCore import Qt, QTimer
+    from PyQt4.QtGui import QHBoxLayout, QPushButton, QShortcut, QVBoxLayout, QHBoxLayout, QDialog, QLabel, QLineEdit, QSizePolicy
+    from PyQt4.QtGui import QKeySequence
 from aqt.qt import *
 
 
@@ -67,21 +69,28 @@ class MultiPrompt(QDialog):
         self.qrs.pb_u_accept.setDefault(True)
         self.qrs.pb_u_cancel.clicked.connect(self.close)
 
-        self.qrs.qk1.setText(self.co['quick_button_1_label'])
-        self.qrs.qk2.setText(self.co['quick_button_2_label'])
-        self.qrs.qk3.setText(self.co['quick_button_3_label'])
+        if self.co['add_quick_buttons_to_dialog']:
+            for v in self.co['quick_buttons']:
+                qk = QPushButton(self.qrs.horizontalLayoutWidget_2)
+                sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(1)
+                sizePolicy.setHeightForWidth(qk.sizePolicy().hasHeightForWidth())
+                qk.setSizePolicy(sizePolicy)
+                qk.setText(v['label'])
+                qk.clicked.connect(lambda: self.set_and_accept(v['ivl']))
+                self.qrs.vL_custom.addWidget(qk)
 
-        if not self.co['add_quick_buttons_to_dialog']:
-            self.qrs.qk1.setParent(None)
-            self.qrs.qk2.setParent(None)
-            self.qrs.qk3.setParent(None)
-            self.qrs.pb_relearn.setParent(None)
+            qf = QPushButton(self.qrs.horizontalLayoutWidget_2)
+            sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            sizePolicy.setHorizontalStretch(0)
+            sizePolicy.setVerticalStretch(1)
+            sizePolicy.setHeightForWidth(qf.sizePolicy().hasHeightForWidth())
+            qf.setSizePolicy(sizePolicy)
+            qf.setText('forget')
+            qf.clicked.connect(lambda: self.set_and_accept(0))
+            self.qrs.vL_custom.addWidget(qf)
 
-        self.qrs.qk1.clicked.connect(lambda: self.set_and_accept(self.co['quick_button_1_lower'],self.co['quick_button_1_upper']) )
-        self.qrs.qk2.clicked.connect(lambda: self.set_and_accept(self.co['quick_button_2_lower'],self.co['quick_button_2_upper']) )
-        self.qrs.qk3.clicked.connect(lambda: self.set_and_accept(self.co['quick_button_3_lower'],self.co['quick_button_3_upper']) )
-        self.qrs.pb_relearn.clicked.connect(lambda: self.set_and_accept(0,0))
-     
     def checkText(self,arg):
         try:
            int(arg)
@@ -107,29 +116,24 @@ class MultiPrompt(QDialog):
             if (event.key() == eval('Qt.Key_' + str(self.co['one_less_day']).title())):
                 self.change_value_of_display(-1)
                 return True
-            if self.co['add_quick_buttons_to_dialog']:
-                if (event.key() == eval('Qt.Key_' + str(self.co['quick_button_1_key']).title())):                   
-                    self.set_and_accept(self.co['quick_button_1_lower'],self.co['quick_button_1_upper'])
-                    return True
-                elif (event.key() == eval('Qt.Key_' + str(self.co['quick_button_2_key']).title())):            
-                    self.set_and_accept(self.co['quick_button_2_lower'],self.co['quick_button_2_upper'])
-                    return True
-                elif (event.key() == eval('Qt.Key_' + str(self.co['quick_button_3_key']).title())):       
-                    self.set_and_accept(self.co['quick_button_3_lower'],self.co['quick_button_3_upper'])
-                    return True
-                elif (event.key() == eval('Qt.Key_' + str(self.co['relearn_key']).title())):  
-                    self.set_and_accept(0,0)
-                    return True
+            if (event.key() == eval('Qt.Key_' + str(self.co['relearn_key']).title())):  
+                self.set_and_accept(0)
+                return True
+            elif self.co['add_quick_buttons_to_dialog']:
+                for v in self.co['quick_buttons']:
+                    if event.key() == eval('Qt.Key_' + str(v['key'].title())):                   
+                        self.set_and_accept(v['ivl'])
+                        return True
         return False
 
     def accept_read_lineedit(self):
         if len(self.qrs.lineEdit.text()) == 0:
             return
-        self.set_and_accept(int(self.qrs.lineEdit.text()),int(self.qrs.lineEdit.text()))
+        val = int(self.qrs.lineEdit.text())
+        self.set_and_accept(val)
 
-    def set_and_accept(self,lower,upper):
-        self.lower=lower
-        self.upper=upper
+    def set_and_accept(self,ivl):
+        self.ivl = ivl
         self.accept()
 
     def change_value_of_display(self,num):
@@ -160,12 +164,13 @@ class MultiPrompt(QDialog):
     def setupHotkeys(self):
         if self.co['add_quick_buttons_to_dialog']:    
             s = QShortcut(QKeySequence(str(self.co['relearn_key'])),            self, activated=lambda: self.set_and_accept(0,0))
-            s = QShortcut(QKeySequence(str(self.co['quick_button_1_key'])),     self, activated=lambda: self.set_and_accept(self.co['quick_button_1_lower'],self.co['quick_button_1_upper']))
-            s = QShortcut(QKeySequence(str(self.co['quick_button_2_key'])),     self, activated=lambda: self.set_and_accept(self.co['quick_button_2_lower'],self.co['quick_button_2_upper']))
-            s = QShortcut(QKeySequence(str(self.co['quick_button_3_key'])),     self, activated=lambda: self.set_and_accept(self.co['quick_button_3_lower'],self.co['quick_button_3_upper']))
             s = QShortcut(QKeySequence(str(self.co['focus_lineedit'])),         self, activated=lambda: self.qrs.lineEdit.setFocus())
             s = QShortcut(QKeySequence(str(self.co['one_more_day'])),           self, activated=lambda: self.change_value_of_display(1))
             s = QShortcut(QKeySequence(str(self.co['one_less_day'])),           self, activated=lambda: self.change_value_of_display(-1))
+
+            for v in self.co['quick_buttons']:
+                s = QShortcut(QKeySequence(str(v['key'])),     self, activated=lambda: self.set_and_accept(v['ivl']))
+
             if self.co['secondary_accept_1']:    
                 s = QShortcut(QKeySequence(str(self.co['secondary_accept_1'])), self, activated=lambda: self.accept_read_lineedit())
             if self.co['secondary_accept_2']:

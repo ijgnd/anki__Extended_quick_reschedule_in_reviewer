@@ -37,10 +37,11 @@ options:
 - `relearn_key`: this reschedules a card as new
 - `one_more_day`, `one_less_day` : increase/decrease value in lineedit by one
   day
-- `quick_button_1_key`, : shortcut in the reschedule dialog
-- `quick_button_1_label` : text that's on the button 
-- `quick_button_1_lower` : lower limit for new interval
-- `quick_button_1_upper` : upper limit for new interval. If all cards should be
+- `quick_buttons`:
+    - `key`: shortcut in the reschedule dialog
+    - `label` : text that's on the button 
+    - `lower` : lower limit for new interval
+    - `upper` : upper limit for new interval. If all cards should be
   rescheduled with the same interval use the same number twice
 - `secondary_accept_1`, `secondary_accept_2`: keys that close the dialog and
   apply the number you entered into the text/linedit field. The motivation for

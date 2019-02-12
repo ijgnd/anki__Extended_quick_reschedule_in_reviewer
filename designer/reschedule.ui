@@ -219,6 +219,9 @@
     <property name="spacing">
      <number>6</number>
     </property>
+    <property name="sizeConstraint">
+     <enum>QLayout::SetNoConstraint</enum>
+    </property>
     <item>
      <layout class="QVBoxLayout" name="vL_calc">
       <item>
@@ -429,62 +432,10 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="vL_custom" stretch="0,0,0,0">
+     <layout class="QVBoxLayout" name="vL_custom" stretch="">
       <property name="sizeConstraint">
        <enum>QLayout::SetNoConstraint</enum>
       </property>
-      <item>
-       <widget class="QPushButton" name="qk1">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>1</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="qk2">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>1</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="qk3">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>1</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pb_relearn">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>1</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Re-Learn</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
    </layout>
@@ -497,10 +448,6 @@
   <tabstop>tb_up</tabstop>
   <tabstop>tb_down</tabstop>
   <tabstop>lineEdit</tabstop>
-  <tabstop>qk1</tabstop>
-  <tabstop>qk2</tabstop>
-  <tabstop>qk3</tabstop>
-  <tabstop>pb_relearn</tabstop>
   <tabstop>pbc0</tabstop>
   <tabstop>pbc1</tabstop>
   <tabstop>pbc2</tabstop>
@@ -517,4 +464,3 @@
  <resources/>
  <connections/>
 </ui>
- 

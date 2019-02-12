@@ -6,21 +6,29 @@
     "final_latest_date": false,
     "focus_lineedit": "r",
     "one_more_day": "f",
-    "one_less_day" : "d",
-    "quick_button_1_key" : "t",
-    "quick_button_1_label" : "one week",
-    "quick_button_1_lower" : 7,
-    "quick_button_1_upper" : 7,
-    "quick_button_2_key" : "g",
-    "quick_button_2_label" : "one month",
-    "quick_button_2_lower" : 28,
-    "quick_button_2_upper" : 32,
-    "quick_button_3_key" : "b",
-    "quick_button_3_label" : "one year",
-    "quick_button_3_lower" : 330,
-    "quick_button_3_upper" : 390,
-    "relearn_key" : "a",
-    "revlog_rescheduled" : true,
+    "one_less_day": "d",
+    "quick_buttons": [
+        {
+            "key": "t",
+            "label": "one week",
+            "lower": 7,
+            "upper": 7
+        },
+        {
+            "key": "g",
+            "label": "one month",
+            "lower": 28,
+            "upper": 32
+        },
+        {
+            "key": "b",
+            "label": "one year",
+            "lower": 330,
+            "upper": 390
+        }
+    ],
+    "relearn_key": "a",
+    "revlog_rescheduled": true,
     "secondary_accept_1": "e",
     "secondary_accept_2": "space",
     "show_tooltip": true,

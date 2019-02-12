@@ -43,9 +43,9 @@ default_button_ivls = {
 }
 
 
-def list_to_multiline_string(mylist):
+def list_to_multiline_string(list_):
     out = ""
-    for i in mylist:
+    for i in list_:
         out += "- " + i + '\n'
     return(out)
 
@@ -97,13 +97,13 @@ def validate_yyyymmdd(date_text):    #https://stackoverflow.com/a/16870699
         return True 
 
 
-def process_dict(mydict):
+def process_dict(dict_):
     dlist = [x['name'] for x in mw.col.decks.all()]
     out = []
-    if not isinstance(mydict, dict):
+    if not isinstance(dict_, dict):
         out.append('final_latest_date--not_a_dictionary')
     else:
-        for k,v in mydict.items():
+        for k,v in dict_.items():
             if not validate_yyyymmdd(v):
                 out.append('invalid date: "%s"' % v)
             if not k in dlist:

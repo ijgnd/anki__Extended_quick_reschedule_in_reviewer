@@ -100,7 +100,8 @@ def entry_for_20__contextmenu_shortcut():
 
 def reload_config(config):
     global co
-    co = verify.verify_config(config)
+    co = mw.addonManager.getConfig(__name__)
+    #co = verify.verify_config(config)
 
 
 def load_config(config):
@@ -148,21 +149,29 @@ def promptNewInterval():
     card = mw.reviewer.card
     m=mydialog.MultiPrompt(co)
 
-    m.setFixedSize(739, 68)  # m.setFixedSize(m.size())
-    if co['add_num_area_to_dialog'] or co['add_quick_buttons_to_dialog']:
-        m.setFixedSize(739, 330)
+    height = 68
+    if co['add_num_area_to_dialog'] or co['quick_buttons']:
+        height = 330
+    # if co['add_quick_buttons_to_dialog']:
+    #     this = 68 + 88 + len(co['quick_buttons']) * 88
+    #     if this > height:
+    #         height = this
+    m.setFixedSize(739, height)
     if m.exec_():  # True if dialog is accepted, https://stackoverflow.com/a/11553456
         if m.lower == 0 and m.upper == 0:
-            mw.col.sched.forgetCards([card.id])
-            if co['show_tooltip']:
-                tooltip('card reset')
+            runHook("ReMemorize.forget", card) 
         else:
-            if m.upper > limit.upper_under_exam_date_or_deck_maxIvl(card,co['final_latest_date'],m.upper):
-                m.upper = limit.upper_under_exam_date_or_deck_maxIvl(card,co['final_latest_date'],m.upper)
+            if abs(m.ivl) > limit.ivl_under_exam_date_or_deck_maxIvl(card,co['final_latest_date']):
+                m.ivl = limit.ivl_under_exam_date_or_deck_maxIvl(card,co['final_latest_date'])
                 m.lower = max(int(round(m.upper  * (100.0-co['upper_auto_correct_fuzz_in_percent'])/100)),1)
-            if co['revlog_rescheduled']:
-                rememorize.updateStats(card)
-            ivl = utils.customReschedCards( [card.id], m.lower, m.upper )
+                if m.ivl > 0:
+                    ChangeDue = False
+                else:
+                    ChangeDue = True
+            if ChangeDue:
+                runHook("ReMemorize.changeDue", card, m.ivl) 
+            else:
+                runHook("ReMemorize.reschedule", card, m.ivl)    
             if co['show_tooltip']:
                 tooltip('card rescheduled with interval of %d' %ivl)
             mw.reviewer._answeredIds.append(card.id)
