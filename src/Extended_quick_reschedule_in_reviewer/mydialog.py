@@ -5,11 +5,11 @@ from aqt import mw
 from anki import version
 
 if version.startswith("2.1."):
-    from PyQt5.QtCore import Qt, QTimer
+    from PyQt5.QtCore import Qt, QTimer, QSize
     from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QShortcut, QVBoxLayout, QHBoxLayout, QDialog, QLabel, QSizePolicy
     from PyQt5.QtGui import QKeySequence
 else:
-    from PyQt4.QtCore import Qt, QTimer
+    from PyQt4.QtCore import Qt, QTimer, QSize
     from PyQt4.QtGui import QHBoxLayout, QPushButton, QShortcut, QVBoxLayout, QHBoxLayout, QDialog, QLabel, QLineEdit, QSizePolicy
     from PyQt4.QtGui import QKeySequence
 from aqt.qt import *
@@ -31,12 +31,6 @@ class MultiPrompt(QDialog):
         self.qrs.setupUi(self)
         self.setupHotkeys()
         
-        #the following works in general but doesn' work well with a configurable secondary_accept_in_lineedit
-            #https://stackoverflow.com/a/32277007
-            #rest = '[0-9eE ]+'
-            #reg_ex = QRegExp(rest)
-            #le_username_validator = QRegExpValidator(reg_ex, self.qrs.lineEdit)
-            #self.qrs.lineEdit.setValidator(le_username_validator)
         self.qrs.lineEdit.textChanged.connect(self.checkText) #https://stackoverflow.com/q/22520747
         self.qrs.lineEdit.installEventFilter(self)  #https://stackoverflow.com/questions/47960368
 
@@ -49,8 +43,23 @@ class MultiPrompt(QDialog):
         self.qrs.pbc_clear.clicked.connect(lambda: self.qrs.lineEdit.setText(str(0)))
         self.qrs.pbc_enter.clicked.connect(self.accept_read_lineedit)
             
-        if not self.co['add_num_area_to_dialog']:
-            self.qrs.vL_calc.setParent(None)   #hide calculator like input
+        if not self.co['add_num_area_to_dialog']:  
+            #hide calculator like input
+            #for some reason it doesn't suffice to hide self.qrs.vL_calc.setParent(None)   
+            #if I just run this I will see one remaing button on the upper left of the window
+            self.qrs.pbc0.setParent(None) 
+            self.qrs.pbc1.setParent(None) 
+            self.qrs.pbc2.setParent(None) 
+            self.qrs.pbc3.setParent(None) 
+            self.qrs.pbc4.setParent(None) 
+            self.qrs.pbc5.setParent(None) 
+            self.qrs.pbc6.setParent(None) 
+            self.qrs.pbc7.setParent(None) 
+            self.qrs.pbc8.setParent(None) 
+            self.qrs.pbc9.setParent(None) 
+            self.qrs.pbc_enter.setParent(None)
+            self.qrs.pbc_clear.setParent(None)
+            self.qrs.vL_calc.setParent(None)
 
         self.qrs.pbc0.clicked.connect(lambda: self.add_to_display(0))
         self.qrs.pbc1.clicked.connect(lambda: self.add_to_display(1))
@@ -62,31 +71,24 @@ class MultiPrompt(QDialog):
         self.qrs.pbc7.clicked.connect(lambda: self.add_to_display(7))
         self.qrs.pbc8.clicked.connect(lambda: self.add_to_display(8))
         self.qrs.pbc9.clicked.connect(lambda: self.add_to_display(9))
+        
         self.qrs.pb_u_clear.clicked.connect(lambda: self.qrs.lineEdit.setText(str(0)))
-
-        self.qrs.lineEdit.setFocus()
         self.qrs.pb_u_accept.clicked.connect(self.accept_read_lineedit)
         self.qrs.pb_u_accept.setDefault(True)
         self.qrs.pb_u_cancel.clicked.connect(self.close)
+        
+        self.qrs.lineEdit.setFocus()
+
 
         if self.co['add_quick_buttons_to_dialog']:
             for v in self.co['quick_buttons']:
-                qk = QPushButton(self.qrs.horizontalLayoutWidget_2)
-                sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-                sizePolicy.setHorizontalStretch(0)
-                sizePolicy.setVerticalStretch(1)
-                sizePolicy.setHeightForWidth(qk.sizePolicy().hasHeightForWidth())
-                qk.setSizePolicy(sizePolicy)
-                qk.setText(v['label'])
-                qk.clicked.connect(lambda: self.set_and_accept(v['ivl']))
-                self.qrs.vL_custom.addWidget(qk)
-
-            qf = QPushButton(self.qrs.horizontalLayoutWidget_2)
-            sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(1)
-            sizePolicy.setHeightForWidth(qf.sizePolicy().hasHeightForWidth())
-            qf.setSizePolicy(sizePolicy)
+                k = QPushButton()
+                k.setMinimumSize(QSize(0, 53))   #53 is the height of the buttons in the top row
+                k.setText(v['label'])
+                k.clicked.connect(lambda _,v=v['ivl']: self.set_and_accept(v))
+                self.qrs.vL_custom.addWidget(k)
+            qf = QPushButton()
+            qf.setMinimumSize(QSize(0, 53))   #53 is the height of the buttons in the top row
             qf.setText('forget')
             qf.clicked.connect(lambda: self.set_and_accept(0))
             self.qrs.vL_custom.addWidget(qf)
@@ -95,7 +97,8 @@ class MultiPrompt(QDialog):
         try:
            int(arg)
         except:
-            self.qrs.lineEdit.setText(self.qrs.lineEdit.text()[:-1])
+            if not (arg == "+" or arg == "-"):
+                self.qrs.lineEdit.setText(self.qrs.lineEdit.text()[:-1])
         else:
             pass
     
@@ -129,11 +132,12 @@ class MultiPrompt(QDialog):
     def accept_read_lineedit(self):
         if len(self.qrs.lineEdit.text()) == 0:
             return
-        val = int(self.qrs.lineEdit.text())
-        self.set_and_accept(val)
+        days = int(self.qrs.lineEdit.text())
+        self.set_and_accept(days)
 
-    def set_and_accept(self,ivl):
-        self.ivl = ivl
+    def set_and_accept(self,days):
+        print('in selfaccept ' + str(days))
+        self.days = days
         self.accept()
 
     def change_value_of_display(self,num):
@@ -142,8 +146,6 @@ class MultiPrompt(QDialog):
         else:
             val = int(self.qrs.lineEdit.text())
         newval = val+num
-        if newval < 0:
-            newval = 0
         self.qrs.lineEdit.setText(str(newval))
 
     def add_to_display(self,num):
@@ -157,8 +159,6 @@ class MultiPrompt(QDialog):
         if self.qrs.lineEdit.text() == "":
             self.qrs.lineEdit.setText(str(0))
         newstring = int(self.qrs.lineEdit.text()) + num
-        if newstring < 0:
-            newstring = 0
         self.qrs.lineEdit.setText(str(newstring))
 
     def setupHotkeys(self):

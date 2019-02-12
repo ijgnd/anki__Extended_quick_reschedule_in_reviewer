@@ -1,14 +1,31 @@
 # -*- coding: utf-8 -*-
 
 """
-- License: AGPLv3
-- some important/core functions are taken/modified from ReMemorize, https://ankiweb.net/shared/info/323586997
-  Copyright (C) 2018 lovac42
-  see the lines below "code taken from"
-- this add-on is  mostly a nicer skin for some of the functions from ReMemorize
+- this add-on is just a nicer skin for some function of
+   ReMemorize, Copyright (C) 2018 lovac42
+   https://ankiweb.net/shared/info/323586997
+   
+- this add-on Copyright (C) 2018, 2019 ignd
 
-configuration is set in the file config.json
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+
 """
+
+
+
 
 import os
 import datetime
@@ -25,7 +42,7 @@ from aqt import mw
 from aqt.qt import *
 from aqt.utils import tooltip, showInfo
 from aqt.reviewer import Reviewer
-from anki.hooks import addHook, remHook
+from anki.hooks import addHook, runHook
 from anki.utils import intTime
 
 if ANKI21:
@@ -41,7 +58,6 @@ from . import mydialog
 from . import verify
 from . import rememorize
 from . import utils
-from . import limit
 
 
 #this weird layout to load shortcut/context menu so that is runs only after checking all
@@ -100,8 +116,8 @@ def entry_for_20__contextmenu_shortcut():
 
 def reload_config(config):
     global co
-    co = mw.addonManager.getConfig(__name__)
-    #co = verify.verify_config(config)
+    co = verify.verify_config(config)
+    print(co)
 
 
 def load_config(config):
@@ -140,7 +156,9 @@ else:
             path = os.path.join(moduleDir, 'backup_config_for_20.json')
             with open(path, 'r', encoding='utf-8') as f:
                 data=f.read()
-            load_config(json.loads(data))
+                load_config(json.loads(data))
+
+
 
 
 
@@ -149,33 +167,17 @@ def promptNewInterval():
     card = mw.reviewer.card
     m=mydialog.MultiPrompt(co)
 
-    height = 68
-    if co['add_num_area_to_dialog'] or co['quick_buttons']:
-        height = 330
-    # if co['add_quick_buttons_to_dialog']:
-    #     this = 68 + 88 + len(co['quick_buttons']) * 88
-    #     if this > height:
-    #         height = this
-    m.setFixedSize(739, height)
     if m.exec_():  # True if dialog is accepted, https://stackoverflow.com/a/11553456
-        if m.lower == 0 and m.upper == 0:
+        if m.days == 0:
             runHook("ReMemorize.forget", card) 
-        else:
-            if abs(m.ivl) > limit.ivl_under_exam_date_or_deck_maxIvl(card,co['final_latest_date']):
-                m.ivl = limit.ivl_under_exam_date_or_deck_maxIvl(card,co['final_latest_date'])
-                m.lower = max(int(round(m.upper  * (100.0-co['upper_auto_correct_fuzz_in_percent'])/100)),1)
-                if m.ivl > 0:
-                    ChangeDue = False
-                else:
-                    ChangeDue = True
-            if ChangeDue:
-                runHook("ReMemorize.changeDue", card, m.ivl) 
-            else:
-                runHook("ReMemorize.reschedule", card, m.ivl)    
-            if co['show_tooltip']:
-                tooltip('card rescheduled with interval of %d' %ivl)
-            mw.reviewer._answeredIds.append(card.id)
-            mw.autosave()
+        elif m.days < 0:
+            runHook("ReMemorize.changeDue", card, abs(m.days))
+        elif m.days > 0:
+            runHook("ReMemorize.reschedule", card, m.days)                   
+        if co['show_tooltip']:
+            tooltip('card rescheduled with interval of about %d days (small randomization may apply)' %abs(m.days))
+        mw.reviewer._answeredIds.append(card.id)
+        mw.autosave()
         mw.reset()
     else:
         tooltip('declined')

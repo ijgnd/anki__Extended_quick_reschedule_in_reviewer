@@ -25,21 +25,9 @@ default_values = {
     "focus_lineedit": "r",
     "one_more_day": "f",
     "one_less_day" : "d",
-    "quick_button_1_key" : "t",
-    "quick_button_2_key" : "g",
-    "quick_button_3_key" : "b",
-    "relearn_key" : "f",
+    "relearn_key" : "a",
     "secondary_accept_1": "e",
     "secondary_accept_2": "space"
-}
-
-default_button_ivls = {
-    "quick_button_1_lower":7,
-    "quick_button_1_upper":7,
-    "quick_button_2_lower":28,
-    "quick_button_2_upper":32,
-    "quick_button_3_lower":330,
-    "quick_button_3_upper":390
 }
 
 
@@ -48,7 +36,6 @@ def list_to_multiline_string(list_):
     for i in list_:
         out += "- " + i + '\n'
     return(out)
-
 
 
 
@@ -62,53 +49,9 @@ def warn_about_illegal_settings(illegal_list):
                 'Hint: For technical reasons this add-on only accepts ASCII\n' + \
                 'characters, numbers and some additional keys (like Fn-keys,\n' + \
                 'space,..) as shortcuts. No unicode.\n\n\n'
-
-        if any('invalid date' in s for s in illegal_list) or any('nonexistend deck' in s for s in illegal_list):
-            msg += 'If you use a version from before 2018-11-22: More recent\n' +\
-                'versions of this add-on verify the deck names in\n' + \
-                '"final_latest_date" so that a typo doesn\'t disable the\n' + \
-                'exam mode silently. Old versions of this add-on had \n' + \
-                'some deck names set as examples. These examples will throw \n' + \
-                'an error now. To remove the values for "final_latest_date" \n' + \
-                'you need to change your settings once.\n'
-
-            if version.startswith("2.1."):
-                msg += 'Go to Tools>Add-ons, select the add-on and click on "Config", \n' + \
-                'to disable the exam mode set: \n' + \
-                '    "final_latest_date": false,   \n' +\
-                'After this go to the Deck overview and only then resume your \n' + \
-                'reviews.'
-            else:
-                msg += 'Open the add-on folder and edit the file "config.json" in the\n' +\
-                'folder "Extended_quick_reschedule_in_reviewer" with a text \n' + \
-                'editor. To disable the exam mode set \n ' + \
-                '    "final_latest_date": false,   '
-                msg += '\n\nRestart Anki after changing the settings.' 
         showInfo(msg,parent=False, help="", type="info", 
         title="Anki Add-on: Extended quick reschedule in reviewer config") 
 
-
-def validate_yyyymmdd(date_text):    #https://stackoverflow.com/a/16870699
-    try:
-        datetime.datetime.strptime(date_text, '%Y-%m-%d')
-    except ValueError:
-        return False
-    else:
-        return True 
-
-
-def process_dict(dict_):
-    dlist = [x['name'] for x in mw.col.decks.all()]
-    out = []
-    if not isinstance(dict_, dict):
-        out.append('final_latest_date--not_a_dictionary')
-    else:
-        for k,v in dict_.items():
-            if not validate_yyyymmdd(v):
-                out.append('invalid date: "%s"' % v)
-            if not k in dlist:
-                out.append('nonexistend deck: "%s"' % k)
-    return out
 
 
 def verify_config(cfg):
@@ -118,37 +61,16 @@ def verify_config(cfg):
             cfg[k] = default_values[k]
             illegal_list.append(k)
 
-    for e in ["add_entry_to_context_menu", "add_num_area_to_dialog","add_quick_buttons_to_dialog",
-            "revlog_rescheduled","show_tooltip","upper_auto_correct_accept"]:
+    for e in ["add_entry_to_context_menu", "add_num_area_to_dialog","add_quick_buttons_to_dialog","show_tooltip",]:
         if not isinstance(cfg[e], bool):
             illegal_list.append(e)
 
-    if cfg["final_latest_date"]:  
-        ret = process_dict(cfg["final_latest_date"])
-        if ret:
-            for i in ret:
-                illegal_list.append(i)
-
-    for k,v in cfg.items():
-        if k in default_button_ivls:
-            if not isinstance(v, int):
-                cfg[k] = default_button_ivls[k] 
-                illegal_list.append(k)
-
-    if cfg["quick_button_1_lower"] > cfg["quick_button_1_upper"]:
-        illegal_list.append("quick_button_1_lower is greater than quick_button_1_upper")  
-        cfg["quick_button_1_lower"] = default_button_ivls["quick_button_1_lower"]
-        cfg["quick_button_1_upper"] = default_button_ivls["quick_button_1_upper"]
-
-    if cfg["quick_button_2_lower"] > cfg["quick_button_2_upper"]:
-        illegal_list.append("quick_button_2_lower is greater than quick_button_2_upper")       
-        cfg["quick_button_2_lower"] = default_button_ivls["quick_button_2_lower"]
-        cfg["quick_button_2_upper"] = default_button_ivls["quick_button_2_upper"]
-
-    if cfg["quick_button_3_lower"] > cfg["quick_button_3_upper"]:
-        illegal_list.append("quick_button_3_lower is greater than quick_button_3_upper")        
-        cfg["quick_button_3_lower"] = default_button_ivls["quick_button_3_lower"]
-        cfg["quick_button_3_upper"] = default_button_ivls["quick_button_3_upper"]
+    for e in cfg['quick_buttons']:
+        if not isinstance(e['ivl'], int): 
+            illegal_list.append('quick keys, label: "' + e['label'] + '", ivl: "' + e['ivl'] + '"')
+        if e['key'].title() not in valid_qt_keys:
+            illegal_list.append('quick keys, label: "' + e['label'] + '", key: "' + e['key'] + '"')
+            e['key'] = ""  # disable so that it's not eval-ed
 
     warn_about_illegal_settings(illegal_list)
 
@@ -156,11 +78,13 @@ def verify_config(cfg):
     cfg['focus_lineedit']               = str(cfg["focus_lineedit"])
     cfg['one_more_day']                 = str(cfg["one_more_day"])
     cfg['one_less_day']                 = str(cfg["one_less_day"])
-    cfg['qb1_key']                      = str(cfg["quick_button_1_key"])
-    cfg['qb2_key']                      = str(cfg["quick_button_2_key"])
-    cfg['qb3_key']                      = str(cfg["quick_button_3_key"])
     cfg['relearn_key']                  = str(cfg["relearn_key"])
     cfg['secondary_accept_1']           = str(cfg["secondary_accept_1"])
     cfg['secondary_accept_2']           = str(cfg["secondary_accept_2"])
 
     return cfg
+
+
+
+
+
