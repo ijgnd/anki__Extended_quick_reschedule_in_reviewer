@@ -21,11 +21,6 @@
             "key": "b",
             "label": "one year",
             "ivl":365
-        },
-        {
-            "key": "u",
-            "label": "three year",
-            "ivl":1000
         }
     ],
     "relearn_key": "a",
