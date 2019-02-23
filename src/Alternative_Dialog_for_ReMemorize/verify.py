@@ -55,6 +55,16 @@ def warn_about_illegal_settings(illegal_list):
 
 
 def verify_config(cfg):
+    if cfg.get("quick_button_1_key") or cfg.get("upper_auto_correct_accept"):
+        msg = "Reset the configuration of the add-on Alternative_Dialog_for_ReMemorize " +
+              '(previously named "Extended quick reschedule in reviewer") to the ' +
+              'default values. In the lower left of the config window for this add-on ' +
+              'click "Restore Defaults". This is necessary because the recent update ' +
+              "of this add-on changed how it works. If you don't reset and reapply " +
+              'your settings you might run into unexplainable errors.'
+        showInfo(msg, title="Anki Add-on: Alternative Dialog for ReMemorize ")
+
+
     illegal_list = []
     for k,v in cfg.items():
         if (k in default_values) and (v.title() not in valid_qt_keys):
