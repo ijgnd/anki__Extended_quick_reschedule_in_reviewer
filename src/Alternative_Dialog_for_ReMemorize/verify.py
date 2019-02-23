@@ -41,7 +41,7 @@ def list_to_multiline_string(list_):
 
 def warn_about_illegal_settings(illegal_list):
     if illegal_list:
-        msg = 'Add-on Extended Quick Reschedule in Reviewer \n' + \
+        msg = 'Add-on "Alternative Dialog for ReMemorize" \n' + \
                 'Invalid settings were detected for these settings:  \n\n' + \
                 list_to_multiline_string(illegal_list) + \
                 '\nThese settings are ignored and the default values are applied. \n' + \
@@ -50,18 +50,19 @@ def warn_about_illegal_settings(illegal_list):
                 'characters, numbers and some additional keys (like Fn-keys,\n' + \
                 'space,..) as shortcuts. No unicode.\n\n\n'
         showInfo(msg,parent=False, help="", type="info", 
-        title="Anki Add-on: Extended quick reschedule in reviewer config") 
+        title="Anki Add-on: Alternative Dialog for ReMemorize config") 
 
 
 
 def verify_config(cfg):
     if cfg.get("quick_button_1_key") or cfg.get("upper_auto_correct_accept"):
-        msg = "Reset the configuration of the add-on Alternative_Dialog_for_ReMemorize " +
-              '(previously named "Extended quick reschedule in reviewer") to the ' +
-              'default values. In the lower left of the config window for this add-on ' +
-              'click "Restore Defaults". This is necessary because the recent update ' +
-              "of this add-on changed how it works. If you don't reset and reapply " +
-              'your settings you might run into unexplainable errors.'
+        msg = "Reset the configuration of the add-on Alternative_Dialog_for_ReMemorize " + \
+              '(previously named "Extended quick reschedule in reviewer") to the ' + \
+              'default values. In the lower left of the config window for this add-on ' + \
+              'click "Restore Defaults". \nThis is necessary because the recent update ' + \
+              "of this add-on changed how it works. \nIf you don't reset and reapply " + \
+              'your settings you might run into unexplainable errors. ' + \
+              '\n\nFor additional information see https://ankiweb.net/shared/info/2107899486'
         showInfo(msg, title="Anki Add-on: Alternative Dialog for ReMemorize ")
 
 
