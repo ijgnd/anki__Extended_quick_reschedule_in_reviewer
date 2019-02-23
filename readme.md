@@ -1,6 +1,8 @@
-### Anki Add-on: Extended quick reschedule in reviewer for 2.0/2.1
+### Anki Add-on: Alternative_Dialog_for_ReMemorize
 
-for details the readme in the src folder and the description on [Ankiweb](https://ankiweb.net/shared/info/2107899486).
+for details see config.md in the src folder and the description on [Ankiweb](https://ankiweb.net/shared/info/2107899486). 
+
+This is just an alternative GUI for the add-on [ReMemorize](https://ankiweb.net/shared/info/323586997).
 
 #### installation 
 

@@ -25,7 +25,6 @@ options:
   reschedule for a fixed period (see quick_button options below)
 - `focus_lineedit`: button that resets the focus to the area where you input the
   digits
-- `relearn_key`: this reschedules a card as new
 - `one_more_day`, `one_less_day` : increase/decrease value in lineedit by one
   day
 - `quick_buttons`:
@@ -33,6 +32,7 @@ options:
     - `label` : text that's on the button 
     - `ivl`: new interval. If you set in the ReMemorize settings fuzz_days to true, this value will be modified. 
   rescheduled with the same interval use the same number twice
+- `relearn_key`: this reschedules a card as new
 - `secondary_accept_1`, `secondary_accept_2`: keys that close the dialog and
   apply the number you entered into the text/linedit field. The motivation for
   these options is that this allows you to reschedule without the need to press

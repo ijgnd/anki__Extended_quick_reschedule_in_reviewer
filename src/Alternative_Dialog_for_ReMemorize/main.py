@@ -163,6 +163,9 @@ def promptNewInterval():
         mw.reviewer._answeredIds.append(card.id)
         mw.autosave()
         mw.reset()
+        if card.ivl == mw.col.getCard(card.id).ivl:
+            showInfo("rescheduling didn't change the card interval. " +
+                     "Is the add-on ReMemorized  installed and activated? ")
     else:
         tooltip('declined')
 
