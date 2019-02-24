@@ -149,6 +149,7 @@ else:
 
 def promptNewInterval():
     card = mw.reviewer.card
+    carddue = card.due
     m=mydialog.MultiPrompt(co)
 
     if m.exec_():  # True if dialog is accepted, https://stackoverflow.com/a/11553456
@@ -163,9 +164,10 @@ def promptNewInterval():
         mw.reviewer._answeredIds.append(card.id)
         mw.autosave()
         mw.reset()
-        if card.ivl == mw.col.getCard(card.id).ivl:
-            showInfo("rescheduling didn't change the card interval. " +
-                     "Is the add-on ReMemorized  installed and activated? ")
+
+        if carddue == mw.col.getCard(card.id).due:
+            showInfo("rescheduling didn't change the due date of the card. " +
+                     "Is the add-on ReMemorized installed and activated? ")
     else:
         tooltip('declined')
 
