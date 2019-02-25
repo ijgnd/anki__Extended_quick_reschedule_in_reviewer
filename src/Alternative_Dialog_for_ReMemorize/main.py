@@ -36,7 +36,7 @@ from aqt import mw
 from aqt.qt import *
 from aqt.utils import tooltip, showInfo
 from aqt.reviewer import Reviewer
-from anki.hooks import addHook, runHook
+from anki.hooks import addHook, runHook, wrap
 
 
 from . import mydialog
@@ -47,22 +47,23 @@ from . import verify
 #this weird layout to load shortcut/context menu so that is runs only after checking all
 #user settings once the profile has loaded
 
-if not ANKI21:
-    origKeyHandler = Reviewer._keyHandler
+
 def addShortcuts20(self, evt):
     k = unicode(evt.text())
     if k == co['access_dialog_from_reviewer']:
-        #mw.checkpoint(_("Reschedule card"))
         promptNewInterval()
-        #mw.reset()
-    else:
-        origKeyHandler(self, evt)
 
 
 def reviewerContextMenu20(self, m):
     #self is Reviewer
     a = m.addAction('reschedule')
     a.connect(a, SIGNAL("triggered()"),lambda s=self: promptNewInterval())
+
+
+def entry_for_20__contextmenu_shortcut():
+    if co['add_entry_to_context_menu']:
+        addHook("AnkiWebView.contextMenuEvent", reviewerContextMenu20)
+
 
 
 
@@ -91,10 +92,7 @@ def entry_for_21__contextmenu_shortcut():
         addHook('AnkiWebView.contextMenuEvent', reviewerContextMenu21)
 
 
-def entry_for_20__contextmenu_shortcut():
-    Reviewer._keyHandler = addShortcuts20
-    if co['add_entry_to_context_menu']:
-        addHook("AnkiWebView.contextMenuEvent", reviewerContextMenu20)
+
 
 
 
@@ -110,6 +108,7 @@ def load_config(config):
     if ANKI21:
         addHook('profileLoaded', entry_for_21__contextmenu_shortcut)
     else:
+        Reviewer._keyHandler = wrap(Reviewer._keyHandler, addShortcuts20)
         addHook('profileLoaded', entry_for_20__contextmenu_shortcut)
 
 
@@ -126,14 +125,14 @@ else:
         try:
             load_config(json.loads(data))
         except:
-            showInfo('Add-on Extended Quick Reschedule in Reviewer:\n\n' + 
+            showInfo('Add-on "Alternative Dialog for ReMemorize":\n\n' + 
                     'config file is not a valid json file. Edit your\n' + 
                     '"config.json" and restart.\n\n' +
                     'Maybe these hints are useful for you:\n' +
                     '- In json there may NOT be a comma behind the last entry.\n' + 
                     '- Keys and values are separated by ":".\n' + 
                     '- true and false are lower case.\n'
-                    '- everything apart from true, false, and numbers \n' + 
+                    '- everything apart from true, false, and numbers ' + 
                     '  must be surrounded with "".\n\n' +
                     'Your config.json is ignored. Loading default config ...'
                     )
