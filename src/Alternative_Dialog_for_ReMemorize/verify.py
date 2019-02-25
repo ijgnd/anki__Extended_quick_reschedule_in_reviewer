@@ -56,13 +56,22 @@ def warn_about_illegal_settings(illegal_list):
 
 def verify_config(cfg):
     if cfg.get("quick_button_1_key") or cfg.get("upper_auto_correct_accept"):
-        msg = "Reset the configuration of the add-on Alternative_Dialog_for_ReMemorize " + \
+        msg = 'Reset the configuration of the add-on "Alternative Dialog for ReMemorize" ' + \
               '(previously named "Extended quick reschedule in reviewer") to the ' + \
-              'default values. In the lower left of the config window for this add-on ' + \
-              'click "Restore Defaults". \nThis is necessary because the recent update ' + \
-              "of this add-on changed how it works. \nIf you don't reset and reapply " + \
+              'default values. \n\n' + \
+              'How to reset to default values:\n' + \
+              '- In the main window click on Tools->Add-ons.\n' + \
+              '- In the Add-on window select the add-on "Alternative Dialog for ReMemorize" and click "Config".\n' + \
+              '- In the lower left of the config window for this add-on click "Restore Defaults". \n\n' + \
+              'This reset is necessary because a major recent update ' + \
+              'of this add-on changed how it works. \n\n' + \
+              "If you don't reset and reapply " + \
               'your settings you might run into unexplainable errors. ' + \
-              '\n\nFor additional information see https://ankiweb.net/shared/info/2107899486'
+              '\n\n' + \
+              'This updated version requires that you also have the add-on ' + \
+              '"ReMemorize" installed.\n\n' + \
+              'For additional information about this update see \n' + \
+              'https://ankiweb.net/shared/info/2107899486'
         showInfo(msg, title="Anki Add-on: Alternative Dialog for ReMemorize ")
 
 
