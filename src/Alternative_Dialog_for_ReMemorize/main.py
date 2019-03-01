@@ -99,7 +99,6 @@ def entry_for_21__contextmenu_shortcut():
 def reload_config(config):
     global co
     co = verify.verify_config(config)
-    print(co)
 
 
 def load_config(config):
