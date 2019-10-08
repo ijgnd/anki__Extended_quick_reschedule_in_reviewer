@@ -1,1 +1,1 @@
-from . import main 
+from . import alt_dialog_remem 

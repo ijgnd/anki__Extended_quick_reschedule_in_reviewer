@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-
 """
 - this add-on is just a nicer skin for some function of
    ReMemorize, Copyright (C) 2018 lovac42
    https://ankiweb.net/shared/info/323586997
-   
 - this add-on Copyright (C) 2018, 2019 ignd
 
 This program is free software: you can redistribute it and/or modify
@@ -19,9 +17,6 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-
-
 """
 
 
@@ -37,15 +32,14 @@ from aqt.qt import *
 from aqt.utils import tooltip, showInfo
 from aqt.reviewer import Reviewer
 from anki.hooks import addHook, runHook, wrap
-
+from anki.lang import _
 
 from . import mydialog
 from . import verify
 
 
-
-#this weird layout to load shortcut/context menu so that is runs only after checking all
-#user settings once the profile has loaded
+# this weird layout to load shortcut/context menu so that is runs only after checking all
+# user settings once the profile has loaded
 
 
 def addShortcuts20(self, evt):
@@ -55,9 +49,9 @@ def addShortcuts20(self, evt):
 
 
 def reviewerContextMenu20(self, m):
-    #self is Reviewer
+    # self is Reviewer
     a = m.addAction('reschedule')
-    a.connect(a, SIGNAL("triggered()"),lambda s=self: promptNewInterval())
+    a.connect(a, SIGNAL("triggered()"), lambda s=self: promptNewInterval())
 
 
 def entry_for_20__contextmenu_shortcut():
@@ -113,31 +107,31 @@ def load_config(config):
 
 if ANKI21:
     load_config(mw.addonManager.getConfig(__name__))
-    mw.addonManager.setConfigUpdatedAction(__name__,reload_config) 
+    mw.addonManager.setConfigUpdatedAction(__name__, reload_config)
 
 else:
     moduleDir, _ = os.path.split(__file__)
     path = os.path.join(moduleDir, 'config.json')
     if os.path.exists(path):
         with open(path, 'r', encoding='utf-8') as f:
-            data=f.read()
+            data = f.read()
         try:
             load_config(json.loads(data))
         except:
-            showInfo('Add-on "Alternative Dialog for ReMemorize":\n\n' + 
-                    'config file is not a valid json file. Edit your\n' + 
-                    '"config.json" and restart.\n\n' +
-                    'Maybe these hints are useful for you:\n' +
-                    '- In json there may NOT be a comma behind the last entry.\n' + 
-                    '- Keys and values are separated by ":".\n' + 
-                    '- true and false are lower case.\n'
-                    '- everything apart from true, false, and numbers ' + 
-                    '  must be surrounded with "".\n\n' +
-                    'Your config.json is ignored. Loading default config ...'
-                    )
+            showInfo('Add-on "Alternative Dialog for ReMemorize":\n\n'
+                     'config file is not a valid json file. Edit your\n'
+                     '"config.json" and restart.\n\n'
+                     'Maybe these hints are useful for you:\n'
+                     '- In json there may NOT be a comma behind the last entry.\n'
+                     '- Keys and values are separated by ":".\n'
+                     '- true and false are lower case.\n'
+                     '- everything apart from true, false, and numbers '
+                     '  must be surrounded with "".\n\n'
+                     'Your config.json is ignored. Loading default config ...'
+                     )
             path = os.path.join(moduleDir, 'backup_config_for_20.json')
             with open(path, 'r', encoding='utf-8') as f:
-                data=f.read()
+                data = f.read()
                 load_config(json.loads(data))
 
 
@@ -148,25 +142,32 @@ else:
 def promptNewInterval():
     card = mw.reviewer.card
     carddue = card.due
-    m=mydialog.MultiPrompt(co)
+    m = mydialog.MultiPrompt(co)
 
-    if m.exec_():  # True if dialog is accepted, https://stackoverflow.com/a/11553456
+    if m.exec_():
         if m.days == 0:
-            runHook("ReMemorize.forget", card) 
+            runHook("ReMemorize.forget", card)
         elif m.days < 0:
             runHook("ReMemorize.changeDue", card, abs(m.days))
+            if co['show_tooltip']:
+                message = ('changed due date by about %d days '
+                           '(small randomization may apply)' % abs(m.days)
+                           )
+                tooltip(message)
         elif m.days > 0:
-            runHook("ReMemorize.reschedule", card, m.days)                   
-        if co['show_tooltip']:
-            tooltip('card rescheduled with interval of about %d days (small randomization may apply)' %abs(m.days))
+            runHook("ReMemorize.reschedule", card, m.days)
+            if co['show_tooltip']:
+                message = ('card rescheduled with interval of about %d '
+                           'days (small randomization may apply)' % abs(m.days)
+                           )
+                tooltip(message)
         mw.reviewer._answeredIds.append(card.id)
         mw.autosave()
         mw.reset()
 
         if carddue == mw.col.getCard(card.id).due:
-            showInfo("rescheduling didn't change the due date of the card. " +
-                     "Is the add-on ReMemorized installed and activated? ")
+            showInfo("rescheduling didn't change the due date of the card. "
+                     "Is the add-on ReMemorized installed and activated?"
+                     )
     else:
         tooltip('declined')
-
-

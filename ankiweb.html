@@ -1,0 +1,25 @@
+This add-on is an alternative interface for the add-on <b><a href="https://ankiweb.net/shared/info/323586997" rel="nofollow">ReMemorize: Rescheduler with sibling and logging</a></b> by lovac42. You need to install ReMemorize in order to use this add-on.
+
+If you intend to use this add-on with your fingers (=touch) these add-ons might be useful: For Anki 2.0 there is the add-on <a href="https://ankiweb.net/shared/info/869824347" rel="nofollow">Context Menu Search</a> that has an option to increase the spacing between context menu entries.  Apparently there is a fork for 2.1 (which I haven't tested yet). 
+
+This add-on offers touch-friendly buttons to quicker reschedule in a week, a month, a year (configurable). This add-on can be controlled quicker with only the left hand from the keyboard - no need for "Tab-Space", just "Space" to accept the new value. This add-on only supports the subset of options from ReMemorize that I use: Reschedule the current card by entering the new interval. If you are interested in the options to reschedule by date or to reschedule the previous card this add-on is not for you.
+
+Originally this was a standalone add-on named "Extended quick reschedule in reviewer". But besides the GUI this didn't have any advantages over ReMemorize. ReMemorize is much more popular. It's much more likely that errors will be quickly discovered and fixed in it. So I think it's irresponsible to continue to use custom code. This add-on had an experimental "exam-mode" which made sure that the interval is smaller than a date you set (per deck) so that you couldn't accidentally reschedule the card for date too far in the future. But what if my code contained an error or what if you made an error in the configuration of this mode ... ? It's easier and less error-prone to check in the browser with the recently released add-on <a href="https://ankiweb.net/shared/info/1056004913" rel="nofollow">ReMemorize Ex: Rated0Search</a> which makes only minimal modifications to Anki's code.
+
+<b>Configuration</b>
+This add-on uses the add-on ReMemorize. So its settings also are relevant for this add-on. By default ReMemorize applies some randomization to the values you enter. 
+
+The default shortcut to open this window is "c".
+
+This add-on offers some configuration options that in Anki version 2.1 can be set using the new configuration dialogue: Tools&gt;Add-ons, select the add-on and click on "Config". Changes in the configuration mostly don't require a restart but require that you switch to the main screen and restart your reviews. 
+
+In Anki 2.0 you need to open the add-on folder and edit the file "config.json" in the folder "Alternative_Dialog_for_ReMemorize" with a text editor. For details see <a href="https://apps.ankiweb.net/docs/manual.html#file-locations" rel="nofollow">the section about File Locations from the manual</a>.
+
+In Anki 2.0 if you update from a version that was installed before 2019-02-23 make sure to delete the old version of this add-on, i.e. delete the folder "Extended_quick_reschedule_in_reviewer" and the file "Extended quick reschedule in <a href="http://reviewer.py" rel="nofollow">reviewer.py</a>" from your addons folder.
+
+<b>Errors, Bugs, Issues</b>
+If you experience unexpected behavior try ReMemorize directly. If the problem persists the problem is not with this add-on. If the problem disappears when using ReMemorize directly there might be an error in this add-on. You could leave a report on <a href="https://github.com/ijgnd/anki__Extended_quick_reschedule_in_reviewer/issues" rel="nofollow">github</a>. 
+
+<b>Screenshots</b>
+<img src="https://raw.githubusercontent.com/ijgnd/anki__Extended_quick_reschedule_in_reviewer/master/screenshots/num_area_hidden.png"> 
+On <b>MacOS</b> this add-on seems to look slightly different: It's attached to the main window and doesn't have a titlebar. You have to close this attached window before you close Anki otherwise you'll see a harmless error message. I don't have a Mac so I don't know how to change this. This only affects the appearance of the dialog - it's fully functional on MacOS.
